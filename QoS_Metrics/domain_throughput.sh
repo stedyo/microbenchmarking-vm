@@ -30,7 +30,7 @@ function read_target_domains(){
 function target_domains_status(){
 	# iterate through targets domains U
 	# - check if it's up
-	# - check if it's listening on 12865 and 5201 ports
+	# - check if it's listening on 12865 port
 
 	for domainid in "${!targetdomains[@]}"; do
 	
@@ -54,14 +54,6 @@ function target_domains_status(){
 			dontnetperf+=($domainid)
 		fi
 		
-		# check if target domains is listening on iperf port :: 5201
-		nc -z -q 2 $domainaddress 5201 &> /dev/null
-		if [ $? -eq 0 ]; then
-			echo "$domainid - $domainaddress is listening on port 5201"
-		else
-			echo "$domainid - $domainaddress is NOT listening on port 5201"
-			dontiperf+=($domainid)
-		fi
 		echo "################"
 	done
 }
@@ -89,7 +81,7 @@ target_domains_status
 # -l 			test lenght = overall time spend on this experiment.
 # -t UDP_STREAM = UDP as transport protocol 
 # -- -m 		set packet size (KB)
-# -D 			period accountability (interval for printing throughput data)
+# -D 			interval for printing throughput data
 # -P 			hide headers banners
 
 NETPERF_THROUGHPUT_COMMAND=$(netperf -H ${targetdomains[$domainid]} -P 0 -D $INTERIM_DATA -l $EXPERIMENT_TIME -t UDP_STREAM -- -m $PACKET_SIZE)
