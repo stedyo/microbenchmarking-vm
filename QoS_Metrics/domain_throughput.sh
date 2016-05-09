@@ -2,7 +2,7 @@
 
 # ----------- READ FROM CONFIG FILE 
 base=`pwd`
-relative="/throughput.config"
+relative="/../CONFIG/throughput.config"
 source $base$relative
 
 # ----------- PATH OF MEASUREMENTS FILES
