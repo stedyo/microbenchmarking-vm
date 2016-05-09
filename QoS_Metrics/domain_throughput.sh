@@ -2,12 +2,11 @@
 
 # ----------- READ FROM CONFIG FILE 
 base=`pwd`
-relative="/../vars.config"
+relative="/throughput.config"
 source $base$relative
 
 # ----------- PATH OF MEASUREMENTS FILES
 THROUGHPUT_PATH=$(echo "$base/THROUGHPUT_DATA")
-
 
 if [ ! -d "$THROUGHPUT_PATH" ]; then
 	`mkdir -p $THROUGHPUT_PATH`
@@ -32,6 +31,7 @@ function target_domains_status(){
 	# iterate through targets domains U
 	# - check if it's up
 	# - check if it's listening on 12865 and 5201 ports
+
 	for domainid in "${!targetdomains[@]}"; do
 	
 		domainaddress=${targetdomains[$domainid]}
@@ -85,36 +85,33 @@ target_domains_status
 #-------------------------------------- #
 # --- NETPERF COMMAND LINE
 #
-# -H specify the target host (in this case, the virtual machine ip)
-# -l (test lenght) = iteration time would be 2 seconds.
+# -H 			specify the target host (in this case, the virtual machine ip)
+# -l 			test lenght = overall time spend on this experiment.
 # -t UDP_STREAM = UDP as transport protocol 
-# -- -m (packet size) measured on KB
+# -- -m 		set packet size (KB)
+# -D 			period accountability (interval for printing throughput data)
+# -P 			hide headers banners
 
-netperf_throughput_command=$(netperf -H ${targetdomains[$domainid]} -D 1.5 -t UDP_STREAM -- -m 100)
-
-echo $netperf_throughput_command
+NETPERF_THROUGHPUT_COMMAND=$(netperf -H ${targetdomains[$domainid]} -P 0 -D $INTERIM_DATA -l $EXPERIMENT_TIME -t UDP_STREAM -- -m $PACKET_SIZE)
 
 # if target domain netperf is up, then we execute the command
-#if [[ ! " ${dontnetperf[@]} " =~ " ${domainid} " ]]; then
-#
-	# ---------------------------------------------------- #
-	# START INFINITE LOOP - WAITING UP FOR SIGNALING TO STOP
-	# ---------------------------------------------------- #
-#
-#	while true; do
-#		echo $netperf_throughput_command
-#		timestamp=`date +%Y-%m-%d:%H:%M:%S.%N`
-#		throughputvalue=$(echo $netperf_throughput_command | awk 'END {print $5}')
-#		echo "$timestamp :: $throughputvalue"	
-#	done
-#else
-#	echo "$domainid can't established connection with netperf server"
-#fi
+if [[ ! " ${dontnetperf[@]} " =~ " ${domainid} " ]]; then
 
+	# check if output file doesn't exist ... if not, creates it
+	if [ ! -f $throughputfile ]; then
+		`echo -n "" > $THROUGHPUT_PATH/$ipaddress.file`
+	fi
 
+	# timestamp checkpoint
+	INIT_TIMESTAMP=`date  +%Y-%m-%d:%H:%M:%S`
 
+	`echo "--- $INIT_TIMESTAMP --- " >> $THROUGHPUT_PATH/$ipaddress.file`
 
+		OUTPUT_COMMAND=$(echo $NETPERF_THROUGHPUT_COMMAND | grep '^Interim')
+		THROUGHPUT_DATA=$(echo $OUTPUT_COMMAND | awk -F ' ' '{print $3}')
 
-
-
-
+	`echo "$THROUGHPUT_DATA" >> $THROUGHPUT_PATH/$ipaddress.file`
+	`echo "--- END --- " >>  $THROUGHPUT_PATH/$ipaddress.file`
+else
+	echo "$domainid can't established connection with netperf server"
+fi
