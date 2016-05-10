@@ -84,13 +84,13 @@ target_domains_status
 # -D 			interval for printing throughput data
 # -P 			hide headers banners
 
-NETPERF_THROUGHPUT_COMMAND=$(netperf -H ${targetdomains[$domainid]} -P 0 -D $INTERIM_DATA -l $EXPERIMENT_TIME -t UDP_STREAM -- -m $PACKET_SIZE)
+NETPERF_THROUGHPUT_COMMAND=$(netperf -H ${targetdomains[$domainid]} -P 0 -D $INTERIM_DATA -l $EXPERIMENT_TIME -t UDP_STREAM -- -m $PACKET_SIZE )
 
 # if target domain netperf is up, then we execute the command
 if [[ ! " ${dontnetperf[@]} " =~ " ${domainid} " ]]; then
 
 	# check if output file doesn't exist ... if not, creates it
-	if [ ! -f $throughputfile ]; then
+	if [ ! -f "$THROUGHPUT_PATH/$ipaddress.file" ]; then
 		`echo -n "" > $THROUGHPUT_PATH/$ipaddress.file`
 	fi
 
@@ -102,6 +102,7 @@ if [[ ! " ${dontnetperf[@]} " =~ " ${domainid} " ]]; then
 		OUTPUT_COMMAND=$(echo $NETPERF_THROUGHPUT_COMMAND | grep '^Interim')
 		THROUGHPUT_DATA=$(echo $OUTPUT_COMMAND | awk -F ' ' '{print $3}')
 
+		echo $NETPERF_THROUGHPUT_COMMAND
 	`echo "$THROUGHPUT_DATA" >> $THROUGHPUT_PATH/$ipaddress.file`
 	`echo "--- END --- " >>  $THROUGHPUT_PATH/$ipaddress.file`
 else

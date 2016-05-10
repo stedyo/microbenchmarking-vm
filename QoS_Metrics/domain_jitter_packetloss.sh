@@ -2,14 +2,14 @@
 
 # ----------- READ FROM CONFIG FILE 
 base=`pwd`
-relative="/../CONFIG/throughput.config"
+relative="/../CONFIG/jitter_packetloss.config"
 source $base$relative
 
 # ----------- PATH OF MEASUREMENTS FILES
-THROUGHPUT_PATH=$(echo "$base/THROUGHPUT_DATA")
+JITTER_PACKETLOSS_PATH=$(echo "$base/JITTER_PACKETLOSS_DATA")
 
-if [ ! -d "$THROUGHPUT_PATH" ]; then
-	`mkdir -p $THROUGHPUT_PATH`
+if [ ! -d "$JITTER_PACKETLOSS_PATH" ]; then
+	`mkdir -p $JITTER_PACKETLOSS_PATH`
 fi
 
 # ----------- FUNCTIONS ------------ #
@@ -85,5 +85,32 @@ target_domains_status
 # -l 		set packet size (KB)
 
 
+JITTER_PACKETLOSS_COMMAND=$(iperf3 -u -c 10.0.0.10 -f K -i $INTERIM_DATA -t $EXPERIMENT_TIME -l $PACKET_SIZE --get-server-output)
+
+# if target domain netperf is up, then we execute the command
+if [[ ! " ${dontiperf[@]} " =~ " ${domainid} " ]]; then
+
+	# check if output file doesn't exist ... if not, creates it
+	if [ ! -f "$JITTER_PACKETLOSS_PATH/$ipaddress.file" ]; then
+		`echo -n "" > $JITTER_PACKETLOSS_PATH/$ipaddress.file`
+	fi
+
+	# timestamp checkpoint
+	INIT_TIMESTAMP=`date  +%Y-%m-%d:%H:%M:%S`
+
+	`echo "--- $INIT_TIMESTAMP --- " >> $JITTER_PACKETLOSS_PATH/$ipaddress.file`
+
+		OUTPUT_COMMAND=$(echo $JITTER_PACKETLOSS_COMMAND)
+		
+		
+		printf '%s\n' "$OUTPUT_COMMAND" | while IFS= read -r line
+		do
+   			echo "bla $line"
+		done
 
 
+	`echo "$THROUGHPUT_DATA" >> $JITTER_PACKETLOSS_PATH/$ipaddress.file`
+	`echo "--- END --- " >>  $JITTER_PACKETLOSS_PATH/$ipaddress.file`
+else
+	echo "$domainid can't established connection with iperf server"
+fi
