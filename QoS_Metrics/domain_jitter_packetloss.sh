@@ -6,10 +6,15 @@ relative="/../CONFIG/jitter_packetloss.config"
 source $base$relative
 
 # ----------- PATH OF MEASUREMENTS FILES
-JITTER_PACKETLOSS_PATH=$(echo "$base/JITTER_PACKETLOSS_DATA")
+JITTER_PATH=$(echo "$base/JITTER_DATA")
+PACKET_LOSS_PATH=$(echo "$base/PACKET_LOSS_DATA")
 
-if [ ! -d "$JITTER_PACKETLOSS_PATH" ]; then
-	`mkdir -p $JITTER_PACKETLOSS_PATH`
+if [ ! -d "$JITTER_PATH" ]; then
+	`mkdir -p $JITTER_PATH`
+fi
+
+if [ ! -d "$PACKET_LOSS_PATH" ]; then
+	`mkdir -p $PACKET_LOSS_PATH`
 fi
 
 # ----------- FUNCTIONS ------------ #
@@ -98,19 +103,27 @@ if [[ ! " ${dontiperf[@]} " =~ " ${domainid} " ]]; then
 	# timestamp checkpoint
 	INIT_TIMESTAMP=`date  +%Y-%m-%d:%H:%M:%S`
 
-	`echo "--- $INIT_TIMESTAMP --- " >> $JITTER_PACKETLOSS_PATH/$ipaddress.file`
+	`echo "--- $INIT_TIMESTAMP --- " >> $PACKET_LOSS_PATH/$ipaddress.file`
+	`echo "--- $INIT_TIMESTAMP --- " >> $JITTER_PATH/$ipaddress.file`
 
 		OUTPUT_COMMAND=$(echo $JITTER_PACKETLOSS_COMMAND)
 		
+		# string manipulation
+		OUTPUT_1=$(echo "${OUTPUT_COMMAND##*Server output}")
+		OUTPUT_2=$(echo "$OUTPUT_1" | sed '1,5d' | head -n -1)
+		# jitter (ms)
+		JITTER=$(echo "$OUTPUT_2" | awk -F" " '{print $9}')
+		# packet loss (%)
+		PACKET_LOSS=$(echo "$OUTPUT_2" | awk -F" " '{print $11,$12}')
 		
-		printf '%s\n' "$OUTPUT_COMMAND" | while IFS= read -r line
-		do
-   			echo "bla $line"
-		done
+		
+
+		`echo "$JITTER" >> $JITTER_PATH/$ipaddress.file`
+		`echo "$PACKET_LOSS" >> $PACKET_LOSS_PATH/$ipaddress.file`
 
 
-	`echo "$THROUGHPUT_DATA" >> $JITTER_PACKETLOSS_PATH/$ipaddress.file`
-	`echo "--- END --- " >>  $JITTER_PACKETLOSS_PATH/$ipaddress.file`
+	`echo "--- END --- " >>  $PACKET_LOSS_PATH/$ipaddress.file`
+	`echo "--- END --- " >>  $JITTER_PATH/$ipaddress.file`
 else
 	echo "$domainid can't established connection with iperf server"
 fi

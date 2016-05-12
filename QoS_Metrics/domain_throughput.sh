@@ -80,11 +80,12 @@ target_domains_status
 # -H 			specify the target host (in this case, the virtual machine ip)
 # -l 			test lenght = overall time spend on this experiment.
 # -t UDP_STREAM = UDP as transport protocol 
+# -f K = 		set measurement unit in Kb
 # -- -m 		set packet size (KB)
 # -D 			interval for printing throughput data
 # -P 			hide headers banners
 
-NETPERF_THROUGHPUT_COMMAND=$(netperf -H ${targetdomains[$domainid]} -P 0 -D $INTERIM_DATA -l $EXPERIMENT_TIME -t UDP_STREAM -- -m $PACKET_SIZE )
+NETPERF_THROUGHPUT_COMMAND=$(netperf -H ${targetdomains[$domainid]} -P 0 -D $INTERIM_DATA -l $EXPERIMENT_TIME -t UDP_STREAM -f K -- -m $PACKET_SIZE )
 
 # if target domain netperf is up, then we execute the command
 if [[ ! " ${dontnetperf[@]} " =~ " ${domainid} " ]]; then
@@ -100,6 +101,7 @@ if [[ ! " ${dontnetperf[@]} " =~ " ${domainid} " ]]; then
 	`echo "--- $INIT_TIMESTAMP --- " >> $THROUGHPUT_PATH/$ipaddress.file`
 
 		OUTPUT_COMMAND=$(echo $NETPERF_THROUGHPUT_COMMAND | grep '^Interim')
+		# Kbytes/s
 		THROUGHPUT_DATA=$(echo $OUTPUT_COMMAND | awk -F ' ' '{print $3}')
 
 		echo $NETPERF_THROUGHPUT_COMMAND
