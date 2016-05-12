@@ -78,6 +78,7 @@ target_domains_status
 #-------------------------------------- #
 #-------------------------------------- #
 # QOS METRIC: JITTER MEASUREMENT
+# QOS METRIC: PACKET LOSS MEASUREMENT
 #-------------------------------------- #
 #-------------------------------------- #
 # --- IPERF COMMAND LINE
