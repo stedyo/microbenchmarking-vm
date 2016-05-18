@@ -1,4 +1,5 @@
 #!/bin/bash
+declare -A targetdomains
 
 # ----------- READ FROM CONFIG FILE 
 base=`pwd`
@@ -83,7 +84,7 @@ if [[ ! " ${dontnetperf[@]} " =~ " ${domainid} " ]]; then
 	# timestamp checkpoint
 	INIT_TIMESTAMP=`date  +%Y-%m-%d:%H:%M:%S`
 
-	`echo "--- $INIT_TIMESTAMP --- " >> $LATENCY_PATH/$ipaddress.file`
+	`echo "--- $domainid --- $INIT_TIMESTAMP --- " >> $LATENCY_PATH/$ipaddress.file`
 
 		
 		OUTPUT_COMMAND=$(echo $PING_LATENCY_COMMAND | sed '1d' | head -n -2)

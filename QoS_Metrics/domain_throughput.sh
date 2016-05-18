@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+declare -A targetdomains
 # ----------- READ FROM CONFIG FILE 
 base=`pwd`
 relative="/../CONFIG/throughput.config"
@@ -84,7 +86,7 @@ target_domains_status
 # -- -m 		set packet size (KB)
 # -D 			interval for printing throughput data
 # -P 			hide headers banners
-
+echo $domainid
 NETPERF_THROUGHPUT_COMMAND=$(netperf -H ${targetdomains[$domainid]} -P 0 -D $INTERIM_DATA -l $EXPERIMENT_TIME -t UDP_STREAM -f K -- -m $PACKET_SIZE )
 
 # if target domain netperf is up, then we execute the command
@@ -98,7 +100,7 @@ if [[ ! " ${dontnetperf[@]} " =~ " ${domainid} " ]]; then
 	# timestamp checkpoint
 	INIT_TIMESTAMP=`date  +%Y-%m-%d:%H:%M:%S`
 
-	`echo "--- $INIT_TIMESTAMP --- " >> $THROUGHPUT_PATH/$ipaddress.file`
+	`echo "--- $domainid --- $INIT_TIMESTAMP --- " >> $THROUGHPUT_PATH/$ipaddress.file`
 
 		OUTPUT_COMMAND=$(echo $NETPERF_THROUGHPUT_COMMAND | grep '^Interim')
 		# Kbytes/s

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+declare -A targetdomains
+
 # ----------- READ FROM CONFIG FILE 
 base=`pwd`
 relative="/../CONFIG/jitter_packetloss.config"
@@ -23,12 +25,15 @@ fi
 function read_target_domains(){
 	IFS=,
 	arr=($TARGET_DOMAIN_IP)
+	
 
 	for key in "${!arr[@]}"; 
 	do 
 		IFS== read domainname ipaddress <<< ${arr[$key]}
 		targetdomains[$domainname]=$ipaddress
+
 	done
+
 }
 
 
@@ -36,11 +41,14 @@ function target_domains_status(){
 	# iterate through targets domains U
 	# - check if it's up
 	# - check if it's listening on 5201 port
+	
 
 	for domainid in "${!targetdomains[@]}"; do
-	
+		
+
 		domainaddress=${targetdomains[$domainid]}
 
+		
 		# check if domain is up 
 		ping -q -c2 $domainaddress > /dev/null
 		if [ $? -eq 0 ]; then
@@ -91,12 +99,13 @@ target_domains_status
 # -l 		set packet size (KB)
 
 
-JITTER_PACKETLOSS_COMMAND=$(iperf3 -u -c 10.0.0.10 -f K -i $INTERIM_DATA -t $EXPERIMENT_TIME -l $PACKET_SIZE --get-server-output)
+JITTER_PACKETLOSS_COMMAND=$(iperf3 -u -c ${targetdomains[$domainid]} -f K -i $INTERIM_DATA -t $EXPERIMENT_TIME -l $PACKET_SIZE --get-server-output)
 
 # if target domain netperf is up, then we execute the command
 if [[ ! " ${dontiperf[@]} " =~ " ${domainid} " ]]; then
 
 	# check if output file doesn't exist ... if not, creates it
+	echo "$JITTER_PACKETLOSS_PATH/$ipaddress.file"
 	if [ ! -f "$JITTER_PACKETLOSS_PATH/$ipaddress.file" ]; then
 		`echo -n "" > $JITTER_PACKETLOSS_PATH/$ipaddress.file`
 	fi
@@ -104,8 +113,8 @@ if [[ ! " ${dontiperf[@]} " =~ " ${domainid} " ]]; then
 	# timestamp checkpoint
 	INIT_TIMESTAMP=`date  +%Y-%m-%d:%H:%M:%S`
 
-	`echo "--- $INIT_TIMESTAMP --- " >> $PACKET_LOSS_PATH/$ipaddress.file`
-	`echo "--- $INIT_TIMESTAMP --- " >> $JITTER_PATH/$ipaddress.file`
+	`echo "--- $domainid --- $INIT_TIMESTAMP --- " >> $PACKET_LOSS_PATH/$ipaddress.file`
+	`echo "--- $domainid --- $INIT_TIMESTAMP --- " >> $JITTER_PATH/$ipaddress.file`
 
 		OUTPUT_COMMAND=$(echo $JITTER_PACKETLOSS_COMMAND)
 		
