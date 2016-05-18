@@ -67,7 +67,7 @@ target_domains_status
 #-------------------------------------- #
 #-------------------------------------- #
 
-# ping tool
+# ping tool (define RTT time)
 # ouput data in milliseconds ()
 	
 PING_LATENCY_COMMAND=$(ping ${targetdomains[$domainid]} -c $EXPERIMENT_TIME -n)
