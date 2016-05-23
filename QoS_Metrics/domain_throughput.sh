@@ -84,9 +84,10 @@ target_domains_status
 # -t UDP_STREAM = UDP as transport protocol 
 # -f K = 		set measurement unit in Kb
 # -- -m 		set packet size (KB)
+
 # -D 			interval for printing throughput data
 # -P 			hide headers banners
-echo $domainid
+
 NETPERF_THROUGHPUT_COMMAND=$(netperf -H ${targetdomains[$domainid]} -P 0 -D $INTERIM_DATA -l $EXPERIMENT_TIME -t UDP_STREAM -f K -- -m $PACKET_SIZE )
 
 # if target domain netperf is up, then we execute the command
