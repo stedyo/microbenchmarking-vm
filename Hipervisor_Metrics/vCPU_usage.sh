@@ -46,7 +46,7 @@ read_target_domains
 # -line-buffered is a feature from grep that allows display streaming data
 # vcpu consume (%)
 
-XENTOP_COMMAND=$(xentop -b -d $INTERIM_DATA -i $EXPERIMENT_TIME -r 0 | grep --line-buffered $domainname |  awk -F" " '{print $4}')
+XENTOP_COMMAND=$(xentop -b -d $INTERIM_DATA -i $EXPERIMENT_TIME -r 0 | grep --line-buffered $domainname |  awk -F" " '{print $3}')
 
 echo $XENTOP_COMMAND
 
