@@ -46,11 +46,12 @@ read_target_domains
 # -line-buffered is a feature from grep that allows display streaming data
 # vcpu consume (%)
 
-XENTOP_COMMAND_DOM0=$(xentop -b -d $INTERIM_DATA -i $EXPERIMENT_TIME -r 0 | grep --line-buffered Domain-0 |  awk -F" " '{print $3 "\t" $4}')
-XENTOP_COMMAND=$(xentop -b -d $INTERIM_DATA -i $EXPERIMENT_TIME -r 0 | grep --line-buffered $domainname |  awk -F" " '{print $3 "\t" $4}')
+XENTOP_COMMAND=$(xentop -b -d $INTERIM_DATA -i $EXPERIMENT_TIME -r 0)
+BUFFER_DOM0=$(echo $XENTOP_COMMAND | grep --line-buffered Domain-0 |  awk -F" " '{print $3 "\t" $4}')
+BUFFER_DOMU=$(echo $XENTOP_COMMAND | grep --line-buffered Domain-1 |  awk -F" " '{print $3 "\t" $4}')
 
-echo $XENTOP_COMMAND_DOM0
-echo $XENTOP_COMMAND
+
+
 
 # check if output file doesn't exist ... if not, creates it
 if [ ! -f "$VCPUSAGE_PATH/$ipaddress.file" ]; then
@@ -65,13 +66,11 @@ INIT_TIMESTAMP=`date  +%Y-%m-%d:%H:%M:%S`
 # output target domain
 `echo "--- $domainname --- $INIT_TIMESTAMP --- " >> $VCPUSAGE_PATH/$ipaddress.file`
 
-OUTPUT_COMMAND=$(echo $XENTOP_COMMAND)
-OUTPUT_COMMAND_DOM0=$(echo $XENTOP_COMMAND_DOM0)
 
-`echo "$OUTPUT_COMMAND" >> $VCPUSAGE_PATH/$ipaddress.file`
+`echo "$BUFFER_DOMU" >> $VCPUSAGE_PATH/$ipaddress.file`
 
 `echo " ---- dom0 output --- " >> $VCPUSAGE_PATH/$ipaddress.file`
-`echo "$OUTPUT_COMMAND_DOM0" >> $VCPUSAGE_PATH/$ipaddress.file`
+`echo "$BUFFER_DOM0" >> $VCPUSAGE_PATH/$ipaddress.file`
 
 `echo "--- END --- " >>  $VCPUSAGE_PATH/$ipaddress.file`
 
