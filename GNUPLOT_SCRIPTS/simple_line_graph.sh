@@ -1,8 +1,9 @@
 #!/usr/local/bin/gnuplot
 
 set term latex
-set title "CPU Usage"
-set ytics "20"
+set ytics "100"
+set yrange [21500:23000]
+
 plot "test_line.dat" w points
-pause -1 "Hit any key to continue"
+
 
