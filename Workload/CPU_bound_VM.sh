@@ -27,7 +27,6 @@ while true; do
 		
 		`cd $COMPRESS_PATH && tar -zcf $i.tar.gz $i.txt`
 	done
-	`sleep 1`
 done
 
 
