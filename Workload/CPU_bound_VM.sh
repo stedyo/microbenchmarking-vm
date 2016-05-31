@@ -1,4 +1,6 @@
+#!/bin/bash
 # act as a cpu-bound virtual machine
+
 
 
 base=`pwd`
