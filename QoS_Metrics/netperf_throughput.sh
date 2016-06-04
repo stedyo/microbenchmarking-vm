@@ -1,16 +1,17 @@
 #!/bin/bash
-declare -A targetdomains
 
+
+declare -A targetdomains
 # ----------- READ FROM CONFIG FILE 
 base=`pwd`
-relative="/../CONFIG/latency.config"
+relative="/../CONFIG/throughput.config"
 source $base$relative
 
 # ----------- PATH OF MEASUREMENTS FILES
-LATENCY_PATH=$(echo "$base/LATENCY_DATA")
+THROUGHPUT_PATH=$(echo "$base/THROUGHPUT_DATA")
 
-if [ ! -d "$LATENCY_PATH" ]; then
-	`mkdir -p $LATENCY_PATH`
+if [ ! -d "$THROUGHPUT_PATH" ]; then
+	`mkdir -p $THROUGHPUT_PATH`
 fi
 
 # ----------- FUNCTIONS ------------ #
@@ -36,6 +37,15 @@ function target_domains_status(){
 	for domainid in "${!targetdomains[@]}"; do
 	
 		domainaddress=${targetdomains[$domainid]}
+
+		# check if domain is up 
+		ping -q -c2 $domainaddress > /dev/null
+		if [ $? -eq 0 ]; then
+			echo "$domainid - $domainaddress is up"
+		else
+			echo "$domainid - $domainaddress is down"
+			shutdowndomain+=($domainid)
+		fi
 
 		# check if target domains is listening on netperf port :: 12865
 		nc -z -q 2 $domainaddress 12865 &> /dev/null
@@ -64,49 +74,42 @@ target_domains_status
 
 #-------------------------------------- #
 #-------------------------------------- #
-# QOS METRIC: LATENCY MEASUREMENT
+# QOS METRIC: THROUGHPUT MEASUREMENT
 #-------------------------------------- #
 #-------------------------------------- #
+# --- NETPERF COMMAND LINE
+#
+# -H 			specify the target host (in this case, the virtual machine ip)
+# -l 			test lenght = overall time spend on this experiment.
+# -t UDP_STREAM = UDP as transport protocol 
+# -f K = 		set measurement unit in Kb
+# -- -m 		set packet size (KB)
 
-# ping tool (define RTT time)
-# ouput data in milliseconds ()
-	
-PING_LATENCY_COMMAND=$(ping ${targetdomains[$domainid]} -c $EXPERIMENT_TIME -n -s $PACKET_SIZE)
+# -D 			interval for printing throughput data
+# -P 			hide headers banners
+
+NETPERF_THROUGHPUT_COMMAND=$(netperf -H ${targetdomains[$domainid]} -P 0 -D $INTERIM_DATA -l $EXPERIMENT_TIME -t UDP_STREAM -f K -- -m $PACKET_SIZE )
 
 # if target domain netperf is up, then we execute the command
 if [[ ! " ${dontnetperf[@]} " =~ " ${domainid} " ]]; then
 
 	# check if output file doesn't exist ... if not, creates it
-	if [ ! -f "$LATENCY_PATH/$ipaddress.file" ]; then
-		`echo -n "" > $LATENCY_PATH/$ipaddress.file`
+	if [ ! -f "$THROUGHPUT_PATH/$ipaddress.file" ]; then
+		`echo -n "" > $THROUGHPUT_PATH/$ipaddress.file`
 	fi
 
 	# timestamp checkpoint
 	INIT_TIMESTAMP=`date  +%Y-%m-%d:%H:%M:%S`
 
-	`echo "--- $domainid --- $INIT_TIMESTAMP --- " >> $LATENCY_PATH/$ipaddress.file`
+	`echo "--- $domainid --- $INIT_TIMESTAMP --- " >> $THROUGHPUT_PATH/$ipaddress.file`
 
-		
-		OUTPUT_COMMAND=$(echo $PING_LATENCY_COMMAND | sed '1d' | head -n -2)
-		OUTPUT_1=$(echo $OUTPUT_COMMAND | awk -F" " '{print $7}')
-	
+		OUTPUT_COMMAND=$(echo $NETPERF_THROUGHPUT_COMMAND | grep '^Interim')
+		# Kbytes/s
+		THROUGHPUT_DATA=$(echo $OUTPUT_COMMAND | awk -F ' ' '{print $3}')
 
-		printf '%s\n' "$OUTPUT_1" | while IFS= read -r line
-		do
-	   		LATENCY=${line#*=}
-   			`echo "$LATENCY" >>  $LATENCY_PATH/$ipaddress.file`	
-		done			
-
-	`echo "--- END --- " >>  $LATENCY_PATH/$ipaddress.file`
+		echo $NETPERF_THROUGHPUT_COMMAND
+	`echo "$THROUGHPUT_DATA" >> $THROUGHPUT_PATH/$ipaddress.file`
+	`echo "--- END --- " >>  $THROUGHPUT_PATH/$ipaddress.file`
 else
 	echo "$domainid can't established connection with netperf server"
 fi
-
-
-
-
-
-
-
-
-
