@@ -11,7 +11,7 @@ source $base$relative
 JITTER_PATH=$(echo "$base/JITTER_DATA")
 PACKET_LOSS_PATH=$(echo "$base/PACKET_LOSS_DATA")
 THROUGHPUT_PATH=$(echo "$base/THROUGHPUT_DATA")
-DATAGRAM_COUNT_PATH=$(echo "$base/DATAGRAM_COUNT_PATH")
+
 
 if [ ! -d "$JITTER_PATH" ]; then
 	`mkdir -p $JITTER_PATH`
@@ -25,9 +25,6 @@ if [ ! -d "$THROUGHPUT_PATH" ]; then
 	`mkdir -p $THROUGHPUT_PATH`
 fi
 
-if [ ! -d "$DATAGRAM_COUNT_PATH" ]; then
-	`mkdir -p $DATAGRAM_COUNT_PATH`
-fi
 
 # ----------- FUNCTIONS ------------ #
 
@@ -111,7 +108,8 @@ target_domains_status
 # -b=0		prevent bandwidth from being limited
 
 
-QOS_MEASUREMENT_COMMAND=$(iperf3 -u -c ${targetdomains[$domainid]} -b 1000M -i $INTERIM_DATA -t $EXPERIMENT_TIME -l $PACKET_SIZE --get-server-output)
+
+QOS_MEASUREMENT_COMMAND=$(iperf3 -u -c ${targetdomains[$domainid]} -b 1024M -i $INTERIM_DATA -t $EXPERIMENT_TIME -l $PACKET_SIZE --get-server-output)
 
 
 # if target domain netperf is up, then we execute the command
@@ -145,14 +143,6 @@ if [[ ! " ${dontiperf[@]} " =~ " ${domainid} " ]]; then
 		# packet loss (%)
 		PACKET_LOSS=$(echo "$OUTPUT_2" | awk -F" " '{print $11}')
 		
-		echo $THROUGHPUT
-		echo " --------- "
-		echo $JITTER
-		echo " --------- "
-		echo $PACKET_LOSS
-		echo " --------- "
-
-
 		`echo "$THROUGHPUT" >> $THROUGHPUT_PATH/$ipaddress.file`
 		`echo "$JITTER" >> $JITTER_PATH/$ipaddress.file`
 		`echo "$PACKET_LOSS" >> $PACKET_LOSS_PATH/$ipaddress.file`
@@ -160,7 +150,7 @@ if [[ ! " ${dontiperf[@]} " =~ " ${domainid} " ]]; then
 
 	`echo "--- END --- " >>  $PACKET_LOSS_PATH/$ipaddress.file`
 	`echo "--- END --- " >>  $JITTER_PATH/$ipaddress.file`
-	`echo "--- END --- " >>  $THROUGHPUT/$ipaddress.file`
+	`echo "--- END --- " >>  $THROUGHPUT_PATH/$ipaddress.file`
 else
 	echo "$domainid can't established connection with iperf server"
 fi

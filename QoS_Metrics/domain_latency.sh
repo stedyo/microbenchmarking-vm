@@ -71,7 +71,7 @@ target_domains_status
 # ping tool (define RTT time)
 # ouput data in milliseconds ()
 	
-PING_LATENCY_COMMAND=$(ping ${targetdomains[$domainid]} -c $EXPERIMENT_TIME -n -s $PACKET_SIZE)
+PING_LATENCY_COMMAND=$(ping ${targetdomains[$domainid]} -c $EXPERIMENT_TIME -n )
 
 # if target domain netperf is up, then we execute the command
 if [[ ! " ${dontnetperf[@]} " =~ " ${domainid} " ]]; then
