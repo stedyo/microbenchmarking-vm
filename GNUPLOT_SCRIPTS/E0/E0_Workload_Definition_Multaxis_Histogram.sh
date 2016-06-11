@@ -26,8 +26,8 @@ set ytics "10" nomirror
 
 set xtics nomirror
 set xlabel 'Tamanho dos Pacotes de Rede' 
-set y2label 'Taxa de Transmissao (Mb/s)'  rotate by 90
-set ylabel 'Uso CPU (%)'  rotate by 90
+set y2label 'Taxa de Transferência (Mb/s)'  rotate by 90
+set ylabel 'Uso CPU %'  rotate by 90
 
 set auto x
 plot 'e0_workload_definition.dat' using 3:xtic(1) title col axes x1y1 with linespoints ls 1, \
