@@ -81,9 +81,6 @@ read_target_domains
 QOS_MEASUREMENT_COMMAND=$(iperf3 -u -c 10.0.0.2 -b 1024M -i $INTERIM_DATA -t $EXPERIMENT_TIME -l $PACKET_SIZE --get-server-output)
 
 
-# if target domain netperf is up, then we execute the command
-if [[ ! " ${dontiperf[@]} " =~ " ${domainid} " ]]; then
-
 	# timestamp checkpoint
 	INIT_TIMESTAMP=`date  +%Y-%m-%d:%H:%M:%S`
 
@@ -127,6 +124,3 @@ if [[ ! " ${dontiperf[@]} " =~ " ${domainid} " ]]; then
 	`echo "--- END --- " >>  $JITTER_PATH/$ipaddress.file`
 	`echo "--- END --- " >>  $THROUGHPUT_PATH/$ipaddress.file`
 	`echo "--- END --- " >>  $BANDWIDTH_PATH/$ipaddress.file`
-else
-	echo "$domainid can't established connection with iperf server"
-fi
