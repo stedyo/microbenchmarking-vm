@@ -1,0 +1,61 @@
+           CPU0       CPU1       CPU2       CPU3       
+  8:          0          0          0          0  xen-pirq-ioapic-edge  rtc0
+  9:          0          0          0          0  xen-pirq-ioapic-level  acpi
+ 20:         33          0          0          0  xen-pirq-ioapic-level  ehci_hcd:usb1
+ 23:     439727          0          0          0  xen-pirq-ioapic-level  ehci_hcd:usb2
+ 40:     140905          0          0          0  xen-percpu-virq      timer0
+ 41:      77625          0          0          0  xen-percpu-ipi       resched0
+ 42:        772          0          0          0  xen-percpu-ipi       callfunc0
+ 43:          0          0          0          0  xen-percpu-virq      debug0
+ 44:        204          0          0          0  xen-percpu-ipi       callfuncsingle0
+ 45:          0          0          0          0  xen-percpu-ipi       irqwork0
+ 46:          0      35390          0          0  xen-percpu-virq      timer1
+ 47:          0    3370191          0          0  xen-percpu-ipi       resched1
+ 48:          0        929          0          0  xen-percpu-ipi       callfunc1
+ 49:          0          0          0          0  xen-percpu-virq      debug1
+ 50:          0        181          0          0  xen-percpu-ipi       callfuncsingle1
+ 51:          0          0          0          0  xen-percpu-ipi       irqwork1
+ 52:          0          0      39581          0  xen-percpu-virq      timer2
+ 53:          0          0    3870093          0  xen-percpu-ipi       resched2
+ 54:          0          0       1035          0  xen-percpu-ipi       callfunc2
+ 55:          0          0          0          0  xen-percpu-virq      debug2
+ 56:          0          0        191          0  xen-percpu-ipi       callfuncsingle2
+ 57:          0          0          0          0  xen-percpu-ipi       irqwork2
+ 58:          0          0          0      49370  xen-percpu-virq      timer3
+ 59:          0          0          0    4090498  xen-percpu-ipi       resched3
+ 60:          0          0          0        973  xen-percpu-ipi       callfunc3
+ 61:          0          0          0          0  xen-percpu-virq      debug3
+ 62:          0          0          0        243  xen-percpu-ipi       callfuncsingle3
+ 63:          0          0          0          0  xen-percpu-ipi       irqwork3
+ 64:       1304          0          0          0   xen-dyn-event     xenbus
+ 65:          0          0          0          0   xen-dyn-virq      xen-pcpu
+ 66:          0          0          0          0  xen-pirq-msi       PCIe PME
+ 67:          0          0          0          0  xen-pirq-msi       PCIe PME
+ 68:          0          0          0          0   xen-dyn-virq      mce
+ 69:          0          0          0          0   xen-dyn-virq      hvc_console
+ 70:      59248          0          0          0  xen-pirq-msi       ahci
+ 71:    4367774          0          0          0  xen-pirq-msi       eth0
+ 72:        618          0          0          0   xen-dyn-event     evtchn:xenstored
+ 73:          2          0          0          0   xen-dyn-event     evtchn:xenstored
+ 74:        138          0          0          0   xen-dyn-event     evtchn:xenstored
+ 75:        743          0          0          0   xen-dyn-event     evtchn:xenconsoled
+ 76:        263          0          0          0   xen-dyn-event     blkif-backend
+ 77:          1          0          0          0   xen-dyn-event     blkif-backend
+ 78:     911637          0          0          0   xen-dyn-event     vif2.0-q0-tx
+ 79:       1009          0          0          0   xen-dyn-event     vif2.0-q0-rx
+NMI:          0          0          0          0   Non-maskable interrupts
+LOC:          0          0          0          0   Local timer interrupts
+SPU:          0          0          0          0   Spurious interrupts
+PMI:          0          0          0          0   Performance monitoring interrupts
+IWI:          0          0          0          0   IRQ work interrupts
+RTR:          0          0          0          0   APIC ICR read retries
+RES:      77625    3370191    3870093    4090498   Rescheduling interrupts
+CAL:        976       1110       1226       1216   Function call interrupts
+TLB:          0          0          0          0   TLB shootdowns
+TRM:          0          0          0          0   Thermal event interrupts
+THR:          0          0          0          0   Threshold APIC interrupts
+MCE:          0          0          0          0   Machine check exceptions
+MCP:          6          6          6          6   Machine check polls
+HYP:    5970990    3406056    3910353    4140506   Hypervisor callback interrupts
+ERR:          0
+MIS:          0

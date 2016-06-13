@@ -47,8 +47,8 @@ read_target_domains
 # vcpu consume (%)
 
 XENTOP_COMMAND=$(xentop -b -d $INTERIM_DATA -i $EXPERIMENT_TIME -r 0)
-BUFFER_DOM0=$(echo $XENTOP_COMMAND | grep --line-buffered Domain-0 |  awk -F" " '{print $3 "\t" $4}')
-BUFFER_DOMU=$(echo $XENTOP_COMMAND | grep --line-buffered Domain-1 |  awk -F" " '{print $3 "\t" $4}')
+BUFFER_DOM0=$(echo $XENTOP_COMMAND | grep --line-buffered Domain-0 |  awk -F" " '{print $4}')
+BUFFER_DOMU=$(echo $XENTOP_COMMAND | grep --line-buffered Domain-bas |  awk -F" " '{print $4}')
 
 
 
