@@ -116,7 +116,7 @@ target_domains_status
 
 
 
-QOS_MEASUREMENT_COMMAND=$(iperf3 -u -c ${targetdomains[$domainid]} -b 1024M -i $INTERIM_DATA -t $EXPERIMENT_TIME -l $PACKET_SIZE --get-server-output)
+QOS_MEASUREMENT_COMMAND=$(iperf3 -u -c ${targetdomains[$domainid]} -b 160M -i $INTERIM_DATA -t $EXPERIMENT_TIME -l $PACKET_SIZE --get-server-output)
 echo $QOS_MEASUREMENT_COMMAND
 
 

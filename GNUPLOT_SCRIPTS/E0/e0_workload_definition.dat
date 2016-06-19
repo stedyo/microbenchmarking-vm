@@ -1,4 +1,4 @@
-"Pacote"  "Taxa de Transmissao (Mb/s)" "Uso CPU (%)"
+"Packet"  "Throughput (MB/s)" "CPU Usage (%)"
 
 64b 	12,8	99,5
 128b	23,88	99,9
