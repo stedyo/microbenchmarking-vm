@@ -78,7 +78,7 @@ read_target_domains
 # -b=0		prevent bandwidth from being limited
 
 
-QOS_MEASUREMENT_COMMAND=$(iperf3 -u -c 10.0.0.2 -b 1024M -i $INTERIM_DATA -t $EXPERIMENT_TIME -l $PACKET_SIZE --get-server-output)
+QOS_MEASUREMENT_COMMAND=$(iperf3 -u -c 10.0.0.2 -b 160M -i $INTERIM_DATA -t $EXPERIMENT_TIME -l $PACKET_SIZE --get-server-output)
 
 
 	# timestamp checkpoint
