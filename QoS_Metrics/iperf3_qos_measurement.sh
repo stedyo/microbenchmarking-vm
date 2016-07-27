@@ -115,9 +115,8 @@ target_domains_status
 # -b=0		prevent bandwidth from being limited
 
 
+QOS_MEASUREMENT_COMMAND=$(iperf3 -u -c ${targetdomains[$domainid]} -b 1024M -i $INTERIM_DATA -t $EXPERIMENT_TIME -l $PACKET_SIZE --get-server-output)
 
-QOS_MEASUREMENT_COMMAND=$(iperf3 -u -c ${targetdomains[$domainid]} -b 160M -i $INTERIM_DATA -t $EXPERIMENT_TIME -l $PACKET_SIZE --get-server-output)
-echo $QOS_MEASUREMENT_COMMAND
 
 
 # if target domain netperf is up, then we execute the command
